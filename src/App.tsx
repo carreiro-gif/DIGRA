@@ -964,12 +964,7 @@ function AppContent() {
     return () => unsubscribe();
   }, []);
 
-  // -- LOGIN GATE --
-  if (user === null) {
-    return <LoginGate onLogin={(u) => setUser(u)} />;
-  }
-
-  useEffect(() => {
+   useEffect(() => {
     localStorage.setItem("digra_orcamento_v2_react", JSON.stringify(state));
     setTotals(calculateTotals(state));
   }, [state]);
@@ -2619,6 +2614,10 @@ function AppContent() {
     </div>
     );
   };
+
+  if (!user) {
+    return <LoginGate onLogin={(u) => setUser(u)} />;
+  }
 
   return (
     <>
