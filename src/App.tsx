@@ -2562,10 +2562,6 @@ function AppContent() {
                           <span className="text-[8px] text-slate-400 font-bold uppercase block mb-1">Tempo Total</span>
                           <span className="text-xl font-black text-slate-800">{block.time} <small className="text-[10px] font-bold text-slate-400">min</small></span>
                         </div>
-                        <div className="text-right">
-                          <span className="text-[8px] text-slate-400 font-bold uppercase block mb-1">Custo Op.</span>
-                          <span className={`text-sm font-black text-${block.color}-700`}>{formatCurrency(block.cost)}</span>
-                        </div>
                       </div>
                     </div>
                   ))}
