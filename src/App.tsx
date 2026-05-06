@@ -42,6 +42,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { BudgetHistory } from "./components/BudgetHistory";
+import { LoginGate } from "./components/LoginGate";
 import { Login } from "./components/Login";
 import { AuthService } from "./services/AuthService";
 import { BudgetHistoryService } from "./services/BudgetHistoryService";
@@ -962,6 +963,11 @@ function AppContent() {
     });
     return () => unsubscribe();
   }, []);
+
+  // -- LOGIN GATE --
+  if (user === null) {
+    return <LoginGate onLogin={(u) => setUser(u)} />;
+  }
 
   useEffect(() => {
     localStorage.setItem("digra_orcamento_v2_react", JSON.stringify(state));
