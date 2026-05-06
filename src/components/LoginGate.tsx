@@ -56,7 +56,7 @@ export const LoginGate: React.FC<Props> = ({ onLogin }) => {
           <h1 className="text-2xl font-black text-slate-800">
             <span className="text-blue-600">DIGRA</span> — Acesso ao Sistema
           </h1>
-          <p className="text-slate-400 text-sm mt-1">Espaço Carreiro</p>
+          <p className="text-slate-400 text-sm mt-1">Sistema de Orçamentos Gráficos</p>
         </div>
 
         {!showReset ? (
