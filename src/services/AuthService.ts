@@ -1,17 +1,18 @@
-import { 
-  signInWithPopup, 
-  GoogleAuthProvider, 
-  signOut, 
+import {
+  signInWithEmailAndPassword,
+  signOut,
   onAuthStateChanged,
-  User
+  User,
+  setPersistence,
+  browserLocalPersistence,
+  sendPasswordResetEmail
 } from 'firebase/auth';
 import { auth } from './firebase';
 
 export class AuthService {
-  private static provider = new GoogleAuthProvider();
-
-  static async loginWithGoogle(): Promise<User> {
-    const result = await signInWithPopup(auth, this.provider);
+  static async login(email: string, password: string): Promise<User> {
+    await setPersistence(auth, browserLocalPersistence);
+    const result = await signInWithEmailAndPassword(auth, email, password);
     return result.user;
   }
 
@@ -19,18 +20,15 @@ export class AuthService {
     await signOut(auth);
   }
 
+  static async resetPassword(email: string): Promise<void> {
+    await sendPasswordResetEmail(auth, email);
+  }
+
   static onAuthChange(callback: (user: User | null) => void) {
     return onAuthStateChanged(auth, callback);
   }
 
-  static isAuthorized(user: User | null): boolean {
-    if (!user) return false;
-    const authorizedEmails = [
-      'alexandre@example.com', // Placeholder, user will need to provide real ones or I use displayName
-      'chefe@example.com'
-    ];
-    // For simplicity in this demo, I'll check if the name contains Alexandre or Chefe
-    const name = user.displayName?.toLowerCase() || '';
-    return name.includes('alexandre') || name.includes('chefe') || user.email === 'espacocarreiro@gmail.com';
+  static isAdmin(user: User | null): boolean {
+    return user?.email === 'mendes.alexandre@tjrj.jus.br';
   }
 }
