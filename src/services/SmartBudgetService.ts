@@ -95,7 +95,7 @@ export class BudgetHistoryService {
         console.warn('Erro ao adicionar imagem ao PDF:', e);
       }
     }
-
+    
     // ── INFORMAÇÕES DO PRODUTO ────────────────────────────────
     const drawSectionTitle = (title: string, yPos: number, color = [37, 99, 235]) => {
       pdf.setFillColor(color[0], color[1], color[2]);
@@ -208,7 +208,7 @@ export class BudgetHistoryService {
     pdf.text('DIGRA — Sistema Inteligente de Orçamentos', margin, 289);
     pdf.text(`Gerado em ${format(new Date(), 'dd/MM/yyyy HH:mm')}`, W - margin, 289, { align: 'right' });
 
-    return pdf.output('blob');
+  return pdf.output('blob');
   }
 
   static async saveBudget(
