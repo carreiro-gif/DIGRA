@@ -64,13 +64,19 @@ export class BudgetHistoryService {
 
     if (imageDataUrl) {
       try {
-        const imgX = W - margin - 55;
-        pdf.addImage(imageDataUrl, 'JPEG', imgX, y, 55, 40);
+        const format = imageDataUrl.startsWith('data:image/png') ? 'PNG' : 
+                       imageDataUrl.startsWith('data:image/jpeg') || imageDataUrl.startsWith('data:image/jpg') ? 'JPEG' : 'PNG';
+        const imgX = margin;
+        const imgY = y;
+        const imgW = W - margin * 2;
+        const imgH = 60;
+        pdf.addImage(imageDataUrl, format, imgX, imgY, imgW, imgH);
         pdf.setDrawColor(226, 232, 240);
-        pdf.rect(imgX, y, 55, 40);
+        pdf.rect(imgX, imgY, imgW, imgH);
         pdf.setFontSize(7);
         pdf.setTextColor(100, 116, 139);
-        pdf.text('Material de Referência', imgX + 27.5, y + 44, { align: 'center' });
+        pdf.text('Material de Referência', W / 2, imgY + imgH + 5, { align: 'center' });
+        y += imgH + 10;
       } catch (e) {
         console.warn('Erro ao adicionar imagem:', e);
       }
