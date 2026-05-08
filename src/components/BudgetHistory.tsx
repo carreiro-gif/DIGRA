@@ -41,7 +41,7 @@ export const BudgetHistory: React.FC<BudgetHistoryProps> = ({ onBack, onEdit }) 
     if (!window.confirm(`Excluir o orçamento ${budget.numeroOrcamento} de ${budget.cliente}?`)) return;
     setDeletingId(budget.id!);
     try {
-      await BudgetHistoryService.deleteBudget(budget.id!);
+      await BudgetHistoryService.deleteBudget(budget.id!, budget.storagePath);
       setHistory(prev => prev.filter(b => b.id !== budget.id));
     } catch (error) {
       alert('Erro ao excluir orçamento.');
@@ -98,7 +98,8 @@ export const BudgetHistory: React.FC<BudgetHistoryProps> = ({ onBack, onEdit }) 
                   <th className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Número</th>
                   <th className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Cliente</th>
                   <th className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Produto</th>
-                  <th className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Valor</th>
+                  <th className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Valor Total</th>
+                  <th className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Valor Unit.</th>
                   <th className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Data</th>
                   <th className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] text-right">Ações</th>
                 </tr>
@@ -112,6 +113,11 @@ export const BudgetHistory: React.FC<BudgetHistoryProps> = ({ onBack, onEdit }) 
                     <td className="px-8 py-5">
                       <span className="font-black text-emerald-600 bg-emerald-50 px-3 py-1 rounded-lg text-sm">
                         {formatarMoeda(budget.valor)}
+                      </span>
+                    </td>
+                    <td className="px-8 py-5">
+                      <span className="font-black text-blue-600 bg-blue-50 px-3 py-1 rounded-lg text-sm">
+                        {formatarMoeda(budget.valorUnitario || 0)}
                       </span>
                     </td>
                     <td className="px-8 py-5 text-slate-500 text-xs font-bold">
