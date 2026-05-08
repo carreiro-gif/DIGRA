@@ -1613,7 +1613,7 @@ function AppContent() {
     setIsSaving(true);
     try {
       const currentTotals = calculateTotals(state);
-      const imageDataUrl = state.imagens && state.imagens.length > 0 ? state.imagens[0] : undefined;
+      const imageDataUrl = state.imagens && state.imagens.length > 0 ? state.imagens[0].url : undefined;
       await BudgetHistoryService.saveBudget(calc, cliente, imageDataUrl, currentTotals);
       alert("Orçamento salvo com sucesso!");
     } catch (error) {
