@@ -1613,7 +1613,8 @@ function AppContent() {
     setIsSaving(true);
     try {
       const currentTotals = calculateTotals(state);
-      await BudgetHistoryService.saveBudget(calc, cliente, undefined, currentTotals);
+      const imageDataUrl = state.imagens && state.imagens.length > 0 ? state.imagens[0] : undefined;
+      await BudgetHistoryService.saveBudget(calc, cliente, imageDataUrl, currentTotals);
       alert("Orçamento salvo com sucesso!");
     } catch (error) {
       console.error("Erro ao salvar orçamento:", error);
@@ -1745,7 +1746,31 @@ function AppContent() {
 
       <main className="max-w-7xl mx-auto px-6 mt-8 print:mt-0 print:w-full print:max-w-full">
         {isHistoryView ? (
-          <BudgetHistory onBack={() => setIsHistoryView(false)} />
+          <BudgetHistory 
+          onBack={() => setIsHistoryView(false)}
+          onEdit={(budget) => {
+            try {
+              const calc = JSON.parse(budget.calcSnapshot!);
+              // @ts-ignore
+              window.lastCalc = calc;
+              setState(prev => ({
+                ...prev,
+                technicalForm: calc.input,
+                info: {
+                  ...prev.info,
+                  qtTotal: calc.input.quantidade,
+                  tamanhoFinal: calc.input.tamanhoFinal,
+                  tec: calc.input.tipoImpressao,
+                  descricao: calc.input.observacoes || '',
+                },
+              }));
+              setIsHistoryView(false);
+              alert(`Orçamento ${budget.numeroOrcamento} reaberto! Faça as alterações e salve novamente.`);
+            } catch(e) {
+              alert('Erro ao reabrir orçamento.');
+            }
+          }}
+        />
         ) : (
           <>
             {/* SMART BUDGET SECTION (NEW) */}
