@@ -2603,25 +2603,7 @@ function AppContent() {
     </div>
   </div>
 </div>
-                  <div className="bg-slate-900 rounded-2xl p-6 text-white shadow-xl">
-                    <span className="text-[9px] font-black uppercase tracking-[0.3em] text-blue-300 block mb-2">Tempo Total Produção</span>
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-4xl font-black">{state.producaoTecnica.producaoEngine.tempo_total}</span>
-                      <span className="text-sm font-bold text-blue-300 uppercase">Minutos</span>
-                    </div>
-                  </div>
-                  <div className="bg-blue-600 rounded-2xl p-6 text-white shadow-xl">
-                    <span className="text-[9px] font-black uppercase tracking-[0.3em] text-blue-100 block mb-2">Custo Total Operacional</span>
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-4xl font-black">{formatCurrency(state.producaoTecnica.producaoEngine.custo_total)}</span>
-                    </div>
-                  </div>
-                  <div className="bg-white border-2 border-slate-900 rounded-2xl p-6 text-slate-900 shadow-xl">
-                    <span className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-400 block mb-2">Custo Unitário Produção</span>
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-4xl font-black">{formatCurrency(state.producaoTecnica.producaoEngine.custo_unitario)}</span>
-                    </div>
-                  </div>
+                  
                 </div>
               </div>
             )}
