@@ -1,6 +1,6 @@
 import { 
   collection, addDoc, getDocs, query, orderBy,
-  serverTimestamp, doc, runTransaction, updateDoc
+  serverTimestamp, doc, runTransaction, updateDoc, deleteDoc
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from './firebase';
@@ -210,7 +210,10 @@ export class BudgetHistoryService {
       calcSnapshot: JSON.stringify(calc),
     });
   }
-
+static async deleteBudget(id: string): Promise<void> {
+    const docRef = doc(db, this.COLLECTION_NAME, id);
+    await deleteDoc(docRef);
+  }
   static async getHistory(searchTerm?: string): Promise<SavedBudget[]> {
     const budgetsCol = collection(db, this.COLLECTION_NAME);
     const q = query(budgetsCol, orderBy('createdAt', 'desc'));
