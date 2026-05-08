@@ -120,14 +120,7 @@ export const BudgetHistory: React.FC<BudgetHistoryProps> = ({ onBack, onEdit }) 
                     <td className="px-8 py-5 text-right">
                       <div className="flex items-center justify-end gap-2">
                         
-                          href={budget.pdfURL}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 px-4 py-2.5 bg-slate-900 text-white rounded-xl hover:bg-slate-800 transition-all text-[10px] font-black uppercase tracking-widest shadow-lg active:scale-95"
-                        >
-                          <ExternalLink className="w-3.5 h-3.5" />
-                          PDF
-                        </a>
+                          <a href={budget.pdfURL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2.5 bg-slate-900 text-white rounded-xl hover:bg-slate-800 transition-all text-xs font-black uppercase tracking-widest shadow-lg active:scale-95"><ExternalLink className="w-3.5 h-3.5" />PDF</a>
                         {budget.calcSnapshot && onEdit && (
                           <button
                             onClick={() => onEdit(budget)}
