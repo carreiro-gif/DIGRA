@@ -1612,7 +1612,8 @@ function AppContent() {
 
     setIsSaving(true);
     try {
-      await BudgetHistoryService.saveBudget(calc, cliente);
+      const currentTotals = calculateTotals(state);
+      await BudgetHistoryService.saveBudget(calc, cliente, undefined, currentTotals);
       alert("Orçamento salvo com sucesso!");
     } catch (error) {
       console.error("Erro ao salvar orçamento:", error);
@@ -2548,10 +2549,11 @@ function AppContent() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                   {[
-                    { label: 'Preparação', time: state.producaoTecnica.producaoEngine.tempo_preparacao, cost: state.producaoTecnica.producaoEngine.custo_preparacao, color: 'blue' },
-                    { label: 'Impressão', time: state.producaoTecnica.producaoEngine.tempo_impressao, cost: state.producaoTecnica.producaoEngine.custo_impressao, color: 'indigo' },
-                    { label: 'Corte', time: state.producaoTecnica.producaoEngine.tempo_corte, cost: state.producaoTecnica.producaoEngine.custo_corte, color: 'amber' },
-                    { label: 'Acabamento', time: state.producaoTecnica.producaoEngine.tempo_acabamento, cost: state.producaoTecnica.producaoEngine.custo_acabamento, color: 'emerald' },
+                    { label: 'Preparação', time: state.producaoTecnica.producaoEngine.tempo_preparacao, color: 'blue' },
+                    { label: 'Impressão', time: state.producaoTecnica.producaoEngine.tempo_impressao, color: 'indigo' },
+                    { label: 'Corte', time: state.producaoTecnica.producaoEngine.tempo_corte, color: 'amber' },
+                    { label: 'Acabamento', time: state.producaoTecnica.producaoEngine.tempo_acabamento, color: 'emerald' },
+                    
                   ].map((block) => (
                     <div key={block.label} className={`bg-${block.color}-50/50 border border-${block.color}-100 rounded-xl p-4`}>
                       <span className={`text-[9px] font-black uppercase tracking-widest text-${block.color}-600 mb-3 block`}>
