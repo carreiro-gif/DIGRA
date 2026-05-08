@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { BudgetInterpreter, GraphicEngine, OrderBrain } from '../services/SmartBudgetService';
+import { BudgetInterpreter, OrderBrain } from '../services/SmartBudgetService';
 import { ProductionInput, ProductionPaper } from '../types/SmartBudgetTypes';
 import { BaseData } from '../types';
 import { motion, AnimatePresence } from 'motion/react';
