@@ -27,7 +27,7 @@ export class BudgetHistoryService {
     });
   }
 
-  static async generatePDF(calc: CalculatedProduction, budgetNumber: string, cliente: string, imageDataUrl?: string): Promise<Blob> {
+  static async generatePDF(calc: CalculatedProduction, budgetNumber: string, cliente: string, imageDataUrl?: string, totals?: any): Promise<Blob> {
     const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     const W = 210;
     const margin = 15;
@@ -141,21 +141,22 @@ export class BudgetHistoryService {
       y += 4;
     }
 
-    if (calc.producaoEngine) {
-      y = drawSectionTitle('RESUMO FINANCEIRO', y, [220, 38, 38]);
-      pdf.setFillColor(15, 23, 42);
-      pdf.roundedRect(margin, y, W - margin * 2, 22, 3, 3, 'F');
-      pdf.setTextColor(147, 197, 253);
-      pdf.setFontSize(8);
-      pdf.setFont('helvetica', 'bold');
-      pdf.text('CUSTO TOTAL', margin + 10, y + 8);
-      pdf.text('CUSTO UNITÁRIO', W / 2 + 5, y + 8);
-      pdf.setTextColor(255, 255, 255);
-      pdf.setFontSize(14);
-      pdf.text(`R$ ${calc.producaoEngine.custo_total.toFixed(2).replace('.', ',')}`, margin + 10, y + 17);
-      pdf.text(`R$ ${calc.producaoEngine.custo_unitario.toFixed(2).replace('.', ',')}`, W / 2 + 5, y + 17);
-      y += 28;
-    }
+    const totalGeral = totals?.totalGeral ?? calc.producaoEngine?.custo_total ?? 0;
+    const valorUnitario = totals?.valorUnitario ?? calc.producaoEngine?.custo_unitario ?? 0;
+
+    y = drawSectionTitle('RESUMO FINANCEIRO', y, [220, 38, 38]);
+    pdf.setFillColor(15, 23, 42);
+    pdf.roundedRect(margin, y, W - margin * 2, 22, 3, 3, 'F');
+    pdf.setTextColor(147, 197, 253);
+    pdf.setFontSize(8);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('TOTAL GERAL', margin + 10, y + 8);
+    pdf.text('VALOR UNITÁRIO', W / 2 + 5, y + 8);
+    pdf.setTextColor(255, 255, 255);
+    pdf.setFontSize(14);
+    pdf.text(`R$ ${totalGeral.toFixed(2).replace('.', ',')}`, margin + 10, y + 17);
+    pdf.text(`R$ ${valorUnitario.toFixed(2).replace('.', ',')}`, W / 2 + 5, y + 17);
+    y += 28;
 
     pdf.setFillColor(248, 250, 252);
     pdf.rect(0, 282, W, 15, 'F');
@@ -170,9 +171,9 @@ export class BudgetHistoryService {
     return pdf.output('blob');
   }
 
-  static async saveBudget(calc: CalculatedProduction, cliente: string, imageDataUrl?: string): Promise<string> {
+  static async saveBudget(calc: CalculatedProduction, cliente: string, imageDataUrl?: string, totals?: any): Promise<string> {
     const budgetNumber = await this.getNextBudgetNumber();
-    const pdfBlob = await this.generatePDF(calc, budgetNumber, cliente, imageDataUrl);
+    const pdfBlob = await this.generatePDF(calc, budgetNumber, cliente, imageDataUrl, totals);
     const now = new Date();
     const year = now.getFullYear();
     const month = now.getMonth() + 1;
