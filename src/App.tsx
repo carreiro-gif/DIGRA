@@ -2594,7 +2594,15 @@ function AppContent() {
                   ))}
                 </div>
 
-                <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="mt-8 grid grid-cols-1 md:grid-cols-1 gap-4">
+  <div className="bg-slate-900 rounded-2xl p-6 text-white shadow-xl">
+    <span className="text-[9px] font-black uppercase tracking-[0.3em] text-blue-300 block mb-2">Tempo Total Produção</span>
+    <div className="flex items-baseline gap-2">
+      <span className="text-4xl font-black">{state.producaoTecnica.producaoEngine.tempo_total}</span>
+      <span className="text-sm font-bold text-blue-300 uppercase">Minutos</span>
+    </div>
+  </div>
+</div>
                   <div className="bg-slate-900 rounded-2xl p-6 text-white shadow-xl">
                     <span className="text-[9px] font-black uppercase tracking-[0.3em] text-blue-300 block mb-2">Tempo Total Produção</span>
                     <div className="flex items-baseline gap-2">
