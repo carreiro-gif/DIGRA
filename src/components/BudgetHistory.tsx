@@ -2,21 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { BudgetHistoryService } from '../services/BudgetHistoryService';
 import { SavedBudget } from '../types/SmartBudgetTypes';
 import { format } from 'date-fns';
-import { Search, FileText, ExternalLink, ArrowLeft, Loader2 } from 'lucide-react';
+import { Search, FileText, ExternalLink, ArrowLeft, Loader2, Pencil, Trash2 } from 'lucide-react';
 import { formatarMoeda } from '../services/utils';
 
 interface BudgetHistoryProps {
   onBack: () => void;
+  onEdit?: (budget: SavedBudget) => void;
 }
 
-export const BudgetHistory: React.FC<BudgetHistoryProps> = ({ onBack }) => {
+export const BudgetHistory: React.FC<BudgetHistoryProps> = ({ onBack, onEdit }) => {
   const [history, setHistory] = useState<SavedBudget[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchHistory();
-  }, []);
+  useEffect(() => { fetchHistory(); }, []);
 
   const fetchHistory = async (search?: string) => {
     setLoading(true);
@@ -33,32 +33,38 @@ export const BudgetHistory: React.FC<BudgetHistoryProps> = ({ onBack }) => {
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const term = e.target.value;
     setSearchTerm(term);
-    // Debounce search
-    const timeoutId = setTimeout(() => {
-      fetchHistory(term);
-    }, 500);
+    const timeoutId = setTimeout(() => { fetchHistory(term); }, 500);
     return () => clearTimeout(timeoutId);
+  };
+
+  const handleDelete = async (budget: SavedBudget) => {
+    if (!window.confirm(`Excluir o orçamento ${budget.numeroOrcamento} de ${budget.cliente}?`)) return;
+    setDeletingId(budget.id!);
+    try {
+      await BudgetHistoryService.deleteBudget(budget.id!);
+      setHistory(prev => prev.filter(b => b.id !== budget.id));
+    } catch (error) {
+      alert('Erro ao excluir orçamento.');
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   return (
     <div className="space-y-8">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div className="flex items-center gap-4">
-          <button 
-            onClick={onBack}
-            className="p-3 bg-white hover:bg-slate-100 rounded-2xl border border-slate-200 shadow-sm transition-all active:scale-95"
-          >
+          <button onClick={onBack} className="p-3 bg-white hover:bg-slate-100 rounded-2xl border border-slate-200 shadow-sm transition-all active:scale-95">
             <ArrowLeft className="w-6 h-6 text-slate-600" />
           </button>
           <div>
             <h1 className="text-3xl font-black text-slate-800 tracking-tight">Histórico de Orçamentos</h1>
-            <p className="text-slate-500 text-sm font-medium mt-1">Gerencie e visualize orçamentos salvos anteriormente</p>
+            <p className="text-slate-500 text-sm font-medium mt-1">Gerencie e visualize orçamentos salvos</p>
           </div>
         </div>
-        
         <div className="relative w-full md:w-96 group">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
-          <input 
+          <input
             type="text"
             placeholder="Buscar por cliente, produto ou número..."
             value={searchTerm}
@@ -79,10 +85,7 @@ export const BudgetHistory: React.FC<BudgetHistoryProps> = ({ onBack }) => {
             <FileText className="w-12 h-12 text-slate-300" />
           </div>
           <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">Nenhum orçamento encontrado</p>
-          <button 
-            onClick={onBack}
-            className="mt-6 text-blue-600 font-black text-xs uppercase tracking-widest hover:underline"
-          >
+          <button onClick={onBack} className="mt-6 text-blue-600 font-black text-xs uppercase tracking-widest hover:underline">
             Voltar para o Início
           </button>
         </div>
@@ -115,15 +118,37 @@ export const BudgetHistory: React.FC<BudgetHistoryProps> = ({ onBack }) => {
                       {format(new Date(budget.data), 'dd/MM/yyyy')}
                     </td>
                     <td className="px-8 py-5 text-right">
-                      <a 
-                        href={budget.pdfURL} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-6 py-2.5 bg-slate-900 text-white rounded-xl hover:bg-slate-800 transition-all text-[10px] font-black uppercase tracking-widest shadow-lg shadow-slate-200 active:scale-95"
-                      >
-                        <ExternalLink className="w-3.5 h-3.5" />
-                        VER PDF
-                      </a>
+                      <div className="flex items-center justify-end gap-2">
+                        
+                          href={budget.pdfURL}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 px-4 py-2.5 bg-slate-900 text-white rounded-xl hover:bg-slate-800 transition-all text-[10px] font-black uppercase tracking-widest shadow-lg active:scale-95"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5" />
+                          PDF
+                        </a>
+                        {budget.calcSnapshot && onEdit && (
+                          <button
+                            onClick={() => onEdit(budget)}
+                            className="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all text-[10px] font-black uppercase tracking-widest shadow-lg active:scale-95"
+                          >
+                            <Pencil className="w-3.5 h-3.5" />
+                            EDITAR
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleDelete(budget)}
+                          disabled={deletingId === budget.id}
+                          className="inline-flex items-center gap-2 px-4 py-2.5 bg-red-500 text-white rounded-xl hover:bg-red-600 transition-all text-[10px] font-black uppercase tracking-widest shadow-lg active:scale-95 disabled:opacity-50"
+                        >
+                          {deletingId === budget.id
+                            ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                            : <Trash2 className="w-3.5 h-3.5" />
+                          }
+                          EXCLUIR
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
