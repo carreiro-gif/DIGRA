@@ -2,7 +2,7 @@ import {
   collection, addDoc, getDocs, query, orderBy,
   serverTimestamp, doc, runTransaction, updateDoc, deleteDoc
 } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import { db, storage } from './firebase';
 import { CalculatedProduction, SavedBudget } from '../types/SmartBudgetTypes';
 import { jsPDF } from 'jspdf';
@@ -187,7 +187,9 @@ export class BudgetHistoryService {
       cliente,
       produto: calc.input.produto,
       quantidade: calc.input.quantidade,
-      valor: calc.producaoEngine?.custo_total || 0,
+      valor: totals?.totalGeral ?? calc.producaoEngine?.custo_total ?? 0,
+      valorUnitario: totals?.valorUnitario ?? calc.producaoEngine?.custo_unitario ?? 0,
+      storagePath,
       data: now.toISOString(),
       mes: month,
       ano: year,
@@ -210,7 +212,15 @@ export class BudgetHistoryService {
       calcSnapshot: JSON.stringify(calc),
     });
   }
-static async deleteBudget(id: string): Promise<void> {
+static async deleteBudget(id: string, storagePath?: string): Promise<void> {
+    if (storagePath) {
+      try {
+        const storageRef = ref(storage, storagePath);
+        await deleteObject(storageRef);
+      } catch (e) {
+        console.warn('PDF não encontrado no Storage:', e);
+      }
+    }
     const docRef = doc(db, this.COLLECTION_NAME, id);
     await deleteDoc(docRef);
   }
