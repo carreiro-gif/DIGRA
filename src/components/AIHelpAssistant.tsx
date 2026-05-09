@@ -8,7 +8,7 @@ interface Message {
   content: string;
 }
 
-const SYSTEM_INSTRUCTION = `Você é o Assistente Inteligente do Sistema de Gestão de Impressão (Espaço Carreiro). 
+const SYSTEM_INSTRUCTION = `Você é o Assistente Inteligente do Sistema de Gestão de Impressão (DIGRA). 
 Seu objetivo é ajudar o usuário a tirar todas as dúvidas sobre como usar o sistema, como os cálculos são feitos e como configurar os valores base.
 Seja sempre extremamente educado, prestativo e profissional.
 
@@ -130,7 +130,7 @@ export const AIHelpAssistant: React.FC = () => {
                   <Bot className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-sm">Assistente Espaço Carreiro</h3>
+                  <h3 className="font-bold text-sm">Assistente DIGRA</h3>
                   <p className="text-[10px] text-blue-100 opacity-80">Pronto para ajudar • Inteligente e Educado</p>
                 </div>
               </div>
