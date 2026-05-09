@@ -192,14 +192,18 @@ const Dashboard = ({ onSelectView }: { onSelectView: (view: View) => void }) => 
         className="max-w-7xl w-full"
       >
         <div className="flex flex-col items-center mb-12">
-          <div className="w-24 h-24 bg-white rounded-3xl flex items-center justify-center shadow-2xl mb-6 overflow-hidden">
+          <motion.div
+            animate={{ y: [0, -12, 0] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+            className="mb-6"
+          >
             <img 
               src="/mascote-sorrindo.png" 
               alt="Mascote Digra" 
-              className="w-20 h-20 object-contain transform hover:scale-110 transition-transform" 
+              className="w-40 h-40 object-contain drop-shadow-2xl" 
               referrerPolicy="no-referrer"
             />
-          </div>
+          </motion.div>
           <h1 className="text-3xl font-black text-white text-center tracking-tight flex items-center gap-3">
             <span className="text-blue-500">DIGRA</span> — SISTEMA INTELIGENTE DE ORÇAMENTOS
             <HelpIcon contentKey="OVERVIEW" className="text-white/40 hover:text-white" />
