@@ -1614,6 +1614,10 @@ function AppContent() {
     try {
       const currentTotals = calculateTotals(state);
       const imageDataUrl = state.imagens && state.imagens.length > 0 ? state.imagens[0].url : undefined;
+      // @ts-ignore
+      if (state.imagens && state.imagens.length > 1) {
+        calc.extraImages = state.imagens.slice(1).map((img: any) => img.url);
+      }
       await BudgetHistoryService.saveBudget(calc, cliente, imageDataUrl, currentTotals);
       alert("Orçamento salvo com sucesso!");
     } catch (error) {
