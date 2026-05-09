@@ -180,7 +180,8 @@ export class BudgetHistoryService {
       y = checkNewPage(y, 10);
       y = drawSectionTitle('MATERIAL DE REFERÊNCIA', y, [100, 116, 139]);
 
-      const allImages = [imageDataUrl];
+      const extraImages = (calc as any).extraImages || [];
+      const allImages = [imageDataUrl, ...extraImages];
 
       const thumbW = (W - margin * 2 - 10) / 3;
       const thumbH = 45;
