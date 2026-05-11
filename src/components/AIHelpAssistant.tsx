@@ -131,7 +131,7 @@ export const AIHelpAssistant: React.FC = () => {
                 </div>
                 <div>
                   <h3 className="font-bold text-sm">Assistente DIGRA</h3>
-                  <p className="text-[10px] text-blue-100 opacity-80">Pronto para ajudar • Inteligente e Educado</p>
+                  <p className="text-[10px] text-blue-100 opacity-80"></p>
                 </div>
               </div>
               <button 
