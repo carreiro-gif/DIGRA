@@ -959,7 +959,7 @@ function AppContent() {
   const [isManualOpen, setIsManualOpen] = useState(false);
   const [currentView, setCurrentView] = useState<View>('DASHBOARD');
   const [resetKey, setResetKey] = useState(0);
-
+  const [autoCalculate, setAutoCalculate] = useState(true);
   // -- EFFECTS --
   useEffect(() => {
     const unsubscribe = AuthService.onAuthChange((u) => {
@@ -977,6 +977,7 @@ function AppContent() {
   useEffect(() => {
     if (!state.technicalForm) return;
     if (!state.technicalForm.produto) return;
+    if (!autoCalculate) return;
 
     // Run calculation engine
     try {
@@ -1281,7 +1282,7 @@ function AppContent() {
     setTotals(calculateTotals(freshState));
     setLogoError(false);
     setResetKey(prev => prev + 1);
-
+    setAutoCalculate(true);
     setTimeout(() => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }, 50);
@@ -1310,6 +1311,7 @@ function AppContent() {
 
   // Generic Item handlers
   const addItem = (type: keyof AppState["itens"], item: any) => {
+    setAutoCalculate(false);
     setState((prev) => ({
       ...prev,
       itens: { ...prev.itens, [type]: [...prev.itens[type], item] },
@@ -1317,6 +1319,7 @@ function AppContent() {
   };
 
   const removeItem = (type: keyof AppState["itens"], id: string) => {
+    setAutoCalculate(false);
     setState((prev) => ({
       ...prev,
       itens: {
@@ -1332,6 +1335,7 @@ function AppContent() {
     field: string,
     value: any,
   ) => {
+    setAutoCalculate(false);
     setState((prev) => {
       const list = prev.itens[type].map((item: any) => {
         if (item.id !== id) return item;
@@ -1595,7 +1599,7 @@ function AppContent() {
         technicalForm: calc.input
       };
     });
-
+    setAutoCalculate(true);
     alert(
       `Orçamento inteligente ${append ? 'adicionado' : 'aplicado'}! Máquina: ${calc.resumoTecnico.maquina}.`,
     );
