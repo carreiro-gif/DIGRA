@@ -976,6 +976,7 @@ function AppContent() {
   // Reactive Effect for Technical Form -> Budget Items
   useEffect(() => {
     if (!state.technicalForm) return;
+    if (!state.technicalForm.produto) return;
 
     // Run calculation engine
     try {
@@ -1204,13 +1205,10 @@ function AppContent() {
       e.currentTarget.blur();
     }
 
-    if (
-      !window.confirm(
-        "Tem certeza que deseja iniciar um novo orçamento? Esta ação limpará os dados atuais.",
-      )
-    ) {
-      return;
-    }
+    const confirmado = window.confirm(
+      "⚠️ ATENÇÃO!\n\nVocê salvou o orçamento atual?\n\nClique em CANCELAR para salvar antes.\nClique em OK para descartar e iniciar um novo orçamento."
+    );
+    if (!confirmado) return;
 
     const keys = [
       "orcamentoAtual",
