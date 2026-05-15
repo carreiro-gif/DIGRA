@@ -1283,6 +1283,8 @@ function AppContent() {
     setLogoError(false);
     setResetKey(prev => prev + 1);
     setAutoCalculate(true);
+    // @ts-ignore
+    window.lastCalc = null;
     setTimeout(() => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }, 50);
@@ -1606,75 +1608,96 @@ function AppContent() {
   };
 
   const handleSaveBudget = async () => {
-    // @ts-ignore
-    const calc = window.lastCalc;
-    if (!calc) {
-      alert("Gere um orçamento primeiro!");
-      return;
-    }
-
     const cliente = prompt("Nome do Cliente:");
     if (!cliente) return;
 
     setIsSaving(true);
     try {
-      const imageDataUrl = state.imagens && state.imagens.length > 0 
-        ? state.imagens[0].url 
+      const imageDataUrl = state.imagens && state.imagens.length > 0
+        ? state.imagens[0].url
         : undefined;
 
-      // Constrói componentes atualizados a partir dos itens editados manualmente
-      const componentesAtualizados = state.itens.papeis.map((item: any) => {
-        const basePapel = typeof item.papelIndex === 'number' 
-          ? state.base.papeis[item.papelIndex] 
-          : null;
-        return {
-          nome: basePapel?.nome || 'Papel',
-          papelSugerido: basePapel?.nome || 'Papel',
-          gramatura: parseInt(basePapel?.nome?.match(/\d+/)?.[0] || '0'),
-          totalFolhas: item.qtd || 0,
-          formatoFolha: item.tamanho === 'A3' ? 'A3' : 'A4',
-          totalImpressoes: item.qtd || 0,
-          unidadesPorFolha: 1,
-          folhas66x96Necessarias: 0
-        };
-      });
+      // @ts-ignore
+      let calc = window.lastCalc;
 
-      // Monta calc atualizado com valores reais do estado atual
-      const updatedCalc = {
-        ...calc,
-        componentes: componentesAtualizados.length > 0 
-          ? componentesAtualizados 
-          : calc.componentes,
-        producaoEngine: calc.producaoEngine ? {
-          ...calc.producaoEngine,
-          custo_total: totals.totalGeral,
-          custo_unitario: totals.valorUnitario,
-        } : {
-          custo_total: totals.totalGeral,
-          custo_unitario: totals.valorUnitario,
-          tempo_total: 0,
-          tempo_preparacao: 0,
-          tempo_impressao: 0,
-          tempo_corte: 0,
-          tempo_acabamento: 0,
-          custo_preparacao: 0,
-          custo_impressao: 0,
-          custo_corte: 0,
-          custo_acabamento: 0,
-        }
-      };
+      // Se não houver calc (entrada manual), constrói um a partir do estado atual
+      if (!calc) {
+        calc = {
+          input: {
+            produto: state.info.descricao || state.info.materialReferencia || 'Orçamento Manual',
+            quantidade: state.info.qtTotal,
+            tamanhoFinal: state.info.tamanhoFinal,
+            frenteVerso: false,
+            cores: '4/0',
+            modoImpressao: 'SIMPLES',
+            coresMistas: [],
+            tipoImpressao: state.info.tec,
+            maquina: '',
+            papeis: [],
+            paginas: 0,
+            materiais: { laserFilme: false, espiral: false, capaEncadernacao: false, fitaDuplaFace: false, bobinaPolietileno: false, adesivoVinil: false, bolsaPasta: false },
+            acabamentos: { plastificacao: false, espiral: false, grampo: false, dobra: false, alceamento: false, colagemCapa: false, vinco: false },
+            observacoes: state.info.descricao || ''
+          },
+          componentes: state.itens.papeis.map((item: any) => {
+            const basePapel = typeof item.papelIndex === 'number' ? state.base.papeis[item.papelIndex] : null;
+            return {
+              nome: basePapel?.nome || 'Papel',
+              papelSugerido: basePapel?.nome || 'Papel',
+              gramatura: 0,
+              totalFolhas: item.qtd || 0,
+              formatoFolha: item.tamanho === 'A3' ? 'A3' : 'A4',
+              totalImpressoes: item.qtd || 0,
+              unidadesPorFolha: 1,
+              folhas66x96Necessarias: 0
+            };
+          }),
+          chapas: 0, passadas: 0,
+          tempoImpressaoMin: 0, tempoGuilhotinaMin: 0,
+          tempoDesignerMin: 0, tempoOrcamentistaMin: 0, tempoImpressorMin: 0,
+          temposAcabamento: {}, materiais: [], acrescimoOffset: 0,
+          resumoTecnico: {
+            tipoProducao: state.info.tec, maquina: '',
+            velocidadeAplicada: '', quantidadeProduzida: state.info.qtTotal,
+            passadas: 0, chapas: 0, tempoImpressaoMin: 0,
+            tempoOperadoresMin: 0, tempoTotalMin: 0
+          }
+        };
+      }
+
+      // Atualiza componentes com itens editados manualmente
+      if (state.itens.papeis.length > 0) {
+        calc.componentes = state.itens.papeis.map((item: any) => {
+          const basePapel = typeof item.papelIndex === 'number' ? state.base.papeis[item.papelIndex] : null;
+          return {
+            nome: basePapel?.nome || 'Papel',
+            papelSugerido: basePapel?.nome || 'Papel',
+            gramatura: 0,
+            totalFolhas: item.qtd || 0,
+            formatoFolha: item.tamanho === 'A3' ? 'A3' : 'A4',
+            totalImpressoes: item.qtd || 0,
+            unidadesPorFolha: 1,
+            folhas66x96Necessarias: 0
+          };
+        });
+      }
+
+      // Atualiza valores financeiros com os totais atuais
+      if (calc.producaoEngine) {
+        calc.producaoEngine.custo_total = totals.totalGeral;
+        calc.producaoEngine.custo_unitario = totals.valorUnitario;
+      }
 
       // Adiciona imagens extras
       if (state.imagens && state.imagens.length > 1) {
         // @ts-ignore
-        updatedCalc.extraImages = state.imagens.slice(1).map((img: any) => img.url);
+        calc.extraImages = state.imagens.slice(1).map((img: any) => img.url);
       }
 
-      // Atualiza o lastCalc global
       // @ts-ignore
-      window.lastCalc = updatedCalc;
+      window.lastCalc = calc;
 
-      await BudgetHistoryService.saveBudget(updatedCalc, cliente, imageDataUrl, totals);
+      await BudgetHistoryService.saveBudget(calc, cliente, imageDataUrl, totals);
       alert("Orçamento salvo com sucesso!");
     } catch (error) {
       console.error("Erro ao salvar orçamento:", error);
@@ -1683,7 +1706,6 @@ function AppContent() {
       setIsSaving(false);
     }
   };
-
   // -- RENDER --
 
   const renderView = () => {
