@@ -326,8 +326,8 @@ export class GraphicEngine {
       // Se a máquina é operada pelo designer ou é da programação visual
       if (maquinaDigital?.operador === "DESIGNER GRÁFICO" || input.maquina.toUpperCase().includes('PROGRAMAÇÃO VISUAL')) {
         tempoDesignerMin = tempoImpressaoMin + prepDesigner;
-      } else if (input.maquina.toUpperCase().includes('HAMILTON') || maquinaDigital?.operador.toUpperCase().includes('IMPRESSOR DIGITAL')) {
-        tempoImpressorMin = tempoImpressaoMin + 10;
+     } else if (input.maquina.toUpperCase().includes('HAMILTON') || maquinaDigital?.operador.toUpperCase().includes('IMPRESSOR DIGITAL')) {
+        tempoImpressorMin = tempoImpressaoMin + 15;
       } else {
         tempoImpressorMin = tempoImpressaoMin;
       }
@@ -993,12 +993,18 @@ export class ProductionEngine {
       let velocidade = 45;
       const maquinaNome = (input.maquina || '').toUpperCase();
       
-      if (maquinaNome.includes('RICOH')) {
-        velocidade = input.frenteVerso ? 23 : 45;
-      } else if (maquinaNome.includes('HAMILTON')) {
-        velocidade = input.frenteVerso ? 63 : 125;
-      } else if (maquinaNome.includes('XEROX')) {
-        velocidade = input.frenteVerso ? 35 : 70;
+      const maqBase = (base.maquinasDigitais || []).find(m =>
+        m.maquina.toUpperCase().includes(maquinaNome) ||
+        maquinaNome.includes(m.maquina.toUpperCase())
+      );
+      if (maqBase) {
+        const isA3 = calculated.componentes.some(c => c.formatoFolha === 'A3');
+        if (isA3) {
+          velocidade = input.frenteVerso ? maqBase.a3FvMinuto : maqBase.a3Minuto;
+        } else {
+          velocidade = input.frenteVerso ? maqBase.a4FvMinuto : maqBase.a4Minuto;
+        }
+        if (velocidade <= 0) velocidade = 45;
       }
       
       // Se for A3, o tempo de impressão é o dobro (ou a velocidade é metade) se a base for A4
