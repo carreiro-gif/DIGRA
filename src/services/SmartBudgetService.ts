@@ -141,7 +141,15 @@ export class BudgetInterpreter {
           parsed.papeis = [{ nome: "Offset 120g", gramatura: 120, compraEm: "Folha", descricao: "Papel padrão para folder" }];
         }
       }
-
+      // REGRA: Cartilha/Livro -> Capa 180g + Miolo 75g como padrão
+      if (parsed.produto && (parsed.produto.toLowerCase().includes('cartilha') || parsed.produto.toLowerCase().includes('livro'))) {
+        if (!parsed.papeis || parsed.papeis.length === 0) {
+          parsed.papeis = [
+            { nome: "Cartolina Branca", gramatura: 180, compraEm: "Folha", descricao: "CAPA" },
+            { nome: "Offset", gramatura: 75, compraEm: "Folha", descricao: "MIOLO" }
+          ];
+        }
+      }
       // Ensure all required structures exist to prevent UI crashes
       const result: ProductionInput = {
         produto: parsed.produto || "",
