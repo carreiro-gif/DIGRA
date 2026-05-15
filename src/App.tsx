@@ -1618,13 +1618,63 @@ function AppContent() {
 
     setIsSaving(true);
     try {
-      const currentTotals = calculateTotals(state);
-      const imageDataUrl = state.imagens && state.imagens.length > 0 ? state.imagens[0].url : undefined;
-      // @ts-ignore
+      const imageDataUrl = state.imagens && state.imagens.length > 0 
+        ? state.imagens[0].url 
+        : undefined;
+
+      // Constrói componentes atualizados a partir dos itens editados manualmente
+      const componentesAtualizados = state.itens.papeis.map((item: any) => {
+        const basePapel = typeof item.papelIndex === 'number' 
+          ? state.base.papeis[item.papelIndex] 
+          : null;
+        return {
+          nome: basePapel?.nome || 'Papel',
+          papelSugerido: basePapel?.nome || 'Papel',
+          gramatura: parseInt(basePapel?.nome?.match(/\d+/)?.[0] || '0'),
+          totalFolhas: item.qtd || 0,
+          formatoFolha: item.tamanho === 'A3' ? 'A3' : 'A4',
+          totalImpressoes: item.qtd || 0,
+          unidadesPorFolha: 1,
+          folhas66x96Necessarias: 0
+        };
+      });
+
+      // Monta calc atualizado com valores reais do estado atual
+      const updatedCalc = {
+        ...calc,
+        componentes: componentesAtualizados.length > 0 
+          ? componentesAtualizados 
+          : calc.componentes,
+        producaoEngine: calc.producaoEngine ? {
+          ...calc.producaoEngine,
+          custo_total: totals.totalGeral,
+          custo_unitario: totals.valorUnitario,
+        } : {
+          custo_total: totals.totalGeral,
+          custo_unitario: totals.valorUnitario,
+          tempo_total: 0,
+          tempo_preparacao: 0,
+          tempo_impressao: 0,
+          tempo_corte: 0,
+          tempo_acabamento: 0,
+          custo_preparacao: 0,
+          custo_impressao: 0,
+          custo_corte: 0,
+          custo_acabamento: 0,
+        }
+      };
+
+      // Adiciona imagens extras
       if (state.imagens && state.imagens.length > 1) {
-        calc.extraImages = state.imagens.slice(1).map((img: any) => img.url);
+        // @ts-ignore
+        updatedCalc.extraImages = state.imagens.slice(1).map((img: any) => img.url);
       }
-      await BudgetHistoryService.saveBudget(calc, cliente, imageDataUrl, currentTotals);
+
+      // Atualiza o lastCalc global
+      // @ts-ignore
+      window.lastCalc = updatedCalc;
+
+      await BudgetHistoryService.saveBudget(updatedCalc, cliente, imageDataUrl, totals);
       alert("Orçamento salvo com sucesso!");
     } catch (error) {
       console.error("Erro ao salvar orçamento:", error);
