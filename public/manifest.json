@@ -6,6 +6,12 @@
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#3b82f6",
+  "launch_handler": {
+    "client_mode": "navigate-new"
+  },
+  "window_controls_overlay": {
+    "initial_bounds": { "width": 420, "height": 600 }
+  },
   "icons": [
     {
       "src": "/mascote-sorrindo.png",
