@@ -2,455 +2,230 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=420, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#3b82f6">
 <title>DIGRA — Calculadora de Placas</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  html, body {
-    width: 380px;
-    overflow-x: hidden;
-  }
-
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     background: #0f172a;
     color: #f1f5f9;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 10px;
+    padding: 24px;
   }
 
   .header {
     width: 100%;
+    max-width: 600px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
   }
 
-  .logo-text {
-    font-size: 17px;
-    font-weight: 900;
-    color: #3b82f6;
-    letter-spacing: -0.5px;
-  }
-
-  .logo-sub {
-    font-size: 8px;
-    color: #64748b;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-  }
+  .logo-text { font-size: 24px; font-weight: 900; color: #3b82f6; letter-spacing: -0.5px; }
+  .logo-sub { font-size: 9px; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; }
 
   .settings-btn {
-    width: 30px;
-    height: 30px;
-    background: #1e293b;
-    border: 1px solid #334155;
-    border-radius: 8px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #94a3b8;
-    font-size: 14px;
-    transition: all 0.2s;
+    width: 38px; height: 38px;
+    background: #1e293b; border: 1px solid #334155; border-radius: 10px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: #94a3b8; font-size: 18px; transition: all 0.2s;
   }
-
   .settings-btn:hover { background: #334155; color: #f1f5f9; }
 
   .card {
-    width: 100%;
-    background: #1e293b;
-    border: 1px solid #334155;
-    border-radius: 12px;
-    padding: 10px;
-    margin-bottom: 8px;
+    width: 100%; max-width: 600px;
+    background: #1e293b; border: 1px solid #334155;
+    border-radius: 16px; padding: 16px; margin-bottom: 12px;
   }
 
   .card-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
-    gap: 6px;
+    display: flex; align-items: center;
+    justify-content: space-between; margin-bottom: 14px; gap: 8px;
   }
 
   .card-number {
-    width: 22px;
-    height: 22px;
-    background: #3b82f6;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 10px;
-    font-weight: 900;
-    color: white;
-    flex-shrink: 0;
+    width: 28px; height: 28px; background: #3b82f6; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 900; color: white; flex-shrink: 0;
   }
 
   .type-tabs {
-    display: flex;
-    gap: 3px;
-    background: #0f172a;
-    padding: 3px;
-    border-radius: 8px;
-    flex: 1;
+    display: flex; gap: 4px; background: #0f172a;
+    padding: 4px; border-radius: 10px; flex: 1;
   }
 
   .type-tab {
-    flex: 1;
-    padding: 4px 3px;
-    border: none;
-    border-radius: 6px;
-    font-size: 8px;
-    font-weight: 800;
-    cursor: pointer;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    transition: all 0.2s;
-    background: transparent;
-    color: #64748b;
+    flex: 1; padding: 6px 4px; border: none; border-radius: 7px;
+    font-size: 11px; font-weight: 800; cursor: pointer;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    transition: all 0.2s; background: transparent; color: #64748b;
   }
-
   .type-tab.active { color: white; }
   .type-tab.simples.active { background: #2563eb; }
   .type-tab.plastificada.active { background: #059669; }
   .type-tab.vinil.active { background: #7c3aed; }
 
   .remove-btn {
-    width: 24px;
-    height: 24px;
-    background: #7f1d1d;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    color: #fca5a5;
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
+    width: 30px; height: 30px; background: #7f1d1d; border: none;
+    border-radius: 8px; cursor: pointer; color: #fca5a5; font-size: 14px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
-
   .remove-btn:hover { background: #991b1b; }
 
   .inputs-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 6px;
-    margin-bottom: 8px;
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 12px;
   }
 
   .input-group label {
-    display: block;
-    font-size: 8px;
-    font-weight: 800;
-    color: #64748b;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 4px;
+    display: block; font-size: 9px; font-weight: 800; color: #64748b;
+    text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 6px;
   }
 
   .input-group input {
-    width: 100%;
-    background: #0f172a;
-    border: 1px solid #334155;
-    border-radius: 7px;
-    padding: 6px 8px;
-    color: #f1f5f9;
-    font-size: 14px;
-    font-weight: 700;
-    outline: none;
-    transition: border-color 0.2s;
-    text-align: center;
+    width: 100%; background: #0f172a; border: 1px solid #334155;
+    border-radius: 10px; padding: 10px 12px; color: #f1f5f9;
+    font-size: 18px; font-weight: 700; outline: none;
+    transition: border-color 0.2s; text-align: center;
   }
-
   .input-group input:focus { border-color: #3b82f6; }
-  .input-group input::placeholder { color: #475569; font-size: 11px; }
+  .input-group input::placeholder { color: #475569; font-size: 14px; }
 
-  .result-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6px;
-  }
+  .result-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
   .result-box {
-    background: #0f172a;
-    border: 1px solid #334155;
-    border-radius: 8px;
-    padding: 7px 10px;
-    position: relative;
+    background: #0f172a; border: 1px solid #334155;
+    border-radius: 12px; padding: 12px 14px; position: relative;
   }
 
   .result-box label {
-    display: block;
-    font-size: 7px;
-    font-weight: 800;
-    color: #64748b;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 2px;
+    display: block; font-size: 8px; font-weight: 800; color: #64748b;
+    text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 4px;
   }
 
-  .result-value {
-    font-size: 15px;
-    font-weight: 900;
-    color: #f1f5f9;
-  }
-
-  .result-box.highlight {
-    border-color: #3b82f6;
-    background: #172554;
-  }
-
+  .result-value { font-size: 22px; font-weight: 900; color: #f1f5f9; }
+  .result-box.highlight { border-color: #3b82f6; background: #172554; }
   .result-box.highlight .result-value { color: #60a5fa; }
 
   .copy-btn {
-    position: absolute;
-    top: 6px;
-    right: 6px;
-    width: 18px;
-    height: 18px;
-    background: #334155;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    color: #94a3b8;
-    font-size: 9px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
+    position: absolute; top: 8px; right: 8px;
+    width: 24px; height: 24px; background: #334155; border: none;
+    border-radius: 6px; cursor: pointer; color: #94a3b8; font-size: 11px;
+    display: flex; align-items: center; justify-content: center; transition: all 0.2s;
   }
-
   .copy-btn:hover { background: #3b82f6; color: white; }
   .copy-btn.copied { background: #059669; color: white; }
 
   .add-btn {
-    width: 100%;
-    padding: 9px;
-    background: #1e293b;
-    border: 2px dashed #334155;
-    border-radius: 10px;
-    color: #64748b;
-    font-size: 10px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-bottom: 8px;
+    width: 100%; max-width: 600px; padding: 14px;
+    background: #1e293b; border: 2px dashed #334155; border-radius: 14px;
+    color: #64748b; font-size: 13px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    cursor: pointer; transition: all 0.2s; margin-bottom: 12px;
   }
-
   .add-btn:hover { border-color: #3b82f6; color: #3b82f6; background: #172554; }
 
   .total-card {
-    width: 100%;
+    width: 100%; max-width: 600px;
     background: linear-gradient(135deg, #1e3a8a, #1e40af);
-    border: 1px solid #3b82f6;
-    border-radius: 12px;
-    padding: 14px;
-    margin-bottom: 8px;
+    border: 1px solid #3b82f6; border-radius: 16px;
+    padding: 20px; margin-bottom: 12px;
   }
 
-  .total-label {
-    font-size: 8px;
-    font-weight: 800;
-    color: #93c5fd;
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    margin-bottom: 4px;
-  }
+  .total-label { font-size: 9px; font-weight: 800; color: #93c5fd; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 6px; }
+  .total-value { font-size: 38px; font-weight: 900; color: white; margin-bottom: 14px; }
 
-  .total-value {
-    font-size: 28px;
-    font-weight: 900;
-    color: white;
-    margin-bottom: 10px;
-  }
-
-  .total-actions {
-    display: flex;
-    gap: 6px;
-  }
+  .total-actions { display: flex; gap: 8px; }
 
   .copy-total-btn {
-    flex: 1;
-    padding: 8px;
-    background: #3b82f6;
-    border: none;
-    border-radius: 8px;
-    color: white;
-    font-size: 10px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
+    flex: 1; padding: 12px; background: #3b82f6; border: none;
+    border-radius: 10px; color: white; font-size: 12px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer;
+    transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px;
   }
-
   .copy-total-btn:hover { background: #2563eb; }
   .copy-total-btn.copied { background: #059669; }
 
   .clear-btn {
-    padding: 8px 12px;
-    background: #7f1d1d;
-    border: none;
-    border-radius: 8px;
-    color: #fca5a5;
-    font-size: 10px;
-    font-weight: 800;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.2s;
+    padding: 12px 18px; background: #7f1d1d; border: none;
+    border-radius: 10px; color: #fca5a5; font-size: 12px;
+    font-weight: 800; text-transform: uppercase; cursor: pointer; transition: all 0.2s;
   }
-
   .clear-btn:hover { background: #991b1b; }
 
   .modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.85);
-    z-index: 100;
-    align-items: center;
-    justify-content: center;
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.85); z-index: 100;
+    align-items: center; justify-content: center;
   }
-
   .modal-overlay.open { display: flex; }
 
   .modal {
-    background: #1e293b;
-    border: 1px solid #334155;
-    border-radius: 16px;
-    padding: 20px;
-    width: 340px;
+    background: #1e293b; border: 1px solid #334155;
+    border-radius: 20px; padding: 24px; width: 90%; max-width: 420px;
   }
 
   .modal h2 {
-    font-size: 12px;
-    font-weight: 900;
-    color: #f1f5f9;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    font-size: 13px; font-weight: 900; color: #f1f5f9;
+    text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 18px;
+    display: flex; align-items: center; justify-content: space-between;
   }
 
-  .modal-close {
-    background: none;
-    border: none;
-    color: #64748b;
-    font-size: 20px;
-    cursor: pointer;
-  }
+  .modal-close { background: none; border: none; color: #64748b; font-size: 22px; cursor: pointer; }
 
-  .setting-row { margin-bottom: 10px; }
-
+  .setting-row { margin-bottom: 12px; }
   .setting-row label {
-    display: block;
-    font-size: 9px;
-    font-weight: 800;
-    color: #64748b;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    margin-bottom: 5px;
+    display: block; font-size: 9px; font-weight: 800; color: #64748b;
+    text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 6px;
   }
-
   .setting-input-wrap { position: relative; }
-
   .setting-input-wrap span {
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #64748b;
-    font-weight: 700;
-    font-size: 12px;
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    color: #64748b; font-weight: 700; font-size: 13px;
   }
-
   .setting-row input {
-    width: 100%;
-    background: #0f172a;
-    border: 1px solid #334155;
-    border-radius: 8px;
-    padding: 8px 10px 8px 28px;
-    color: #f1f5f9;
-    font-size: 13px;
-    font-weight: 700;
-    outline: none;
+    width: 100%; background: #0f172a; border: 1px solid #334155;
+    border-radius: 10px; padding: 10px 12px 10px 30px;
+    color: #f1f5f9; font-size: 14px; font-weight: 700; outline: none;
   }
-
   .setting-row input:focus { border-color: #3b82f6; }
 
   .save-btn {
-    width: 100%;
-    padding: 10px;
-    background: #3b82f6;
-    border: none;
-    border-radius: 8px;
-    color: white;
-    font-size: 11px;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    cursor: pointer;
-    margin-top: 6px;
+    width: 100%; padding: 12px; background: #3b82f6; border: none;
+    border-radius: 10px; color: white; font-size: 12px; font-weight: 900;
+    text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; margin-top: 8px;
   }
-
   .save-btn:hover { background: #2563eb; }
 
-  .summary-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 4px 0;
-    border-bottom: 1px solid #1e293b;
-    font-size: 10px;
-  }
+  .items-summary { width: 100%; max-width: 600px; margin-bottom: 8px; }
 
+  .summary-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 6px 0; border-bottom: 1px solid #1e293b; font-size: 12px;
+  }
   .summary-item:last-child { border-bottom: none; }
   .summary-item-name { color: #94a3b8; }
   .summary-item-value { color: #f1f5f9; font-weight: 700; }
 
   .badge {
-    display: inline-block;
-    padding: 1px 5px;
-    border-radius: 4px;
-    font-size: 7px;
-    font-weight: 800;
-    text-transform: uppercase;
-    margin-right: 4px;
+    display: inline-block; padding: 2px 7px; border-radius: 5px;
+    font-size: 8px; font-weight: 800; text-transform: uppercase; margin-right: 6px;
   }
-
   .badge-simples { background: #1d4ed8; color: #bfdbfe; }
   .badge-plastificada { background: #065f46; color: #a7f3d0; }
   .badge-vinil { background: #4c1d95; color: #ddd6fe; }
 
-  .items-summary { width: 100%; margin-bottom: 6px; }
-
   .footer {
-    width: 100%;
-    text-align: center;
-    font-size: 8px;
-    color: #334155;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    padding: 6px 0;
+    width: 100%; max-width: 600px; text-align: center;
+    font-size: 9px; color: #334155; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.2em; padding: 10px 0;
   }
 </style>
 </head>
@@ -525,17 +300,13 @@
     } catch(e) {}
   }
 
-  function saveBase() {
-    localStorage.setItem('digra_placas_base_values', JSON.stringify(base));
-  }
+  function saveBase() { localStorage.setItem('digra_placas_base_values', JSON.stringify(base)); }
 
   function calcSimples(l,a) { return ((l*a)/10000)*base.placaSimples; }
   function calcPlastificada(l,a) { return ((l*a)/10000)*base.placaPlastificada; }
   function calcVinil(l,a) {
     const area=(l*a)/10000;
-    const cv=area*base.vinil, cm=area*base.mascara;
-    const tmaq=(l<=40&&a<=40)?10:60;
-    const sub=cv+cm+(tmaq*base.maquina);
+    const sub=(area*base.vinil)+(area*base.mascara)+(((l<=40&&a<=40)?10:60)*base.maquina);
     return sub+(sub*(base.maoObra/100));
   }
 
@@ -555,14 +326,11 @@
     renderPlacas();
   }
 
-  function removePlaca(id) {
-    placas=placas.filter(p=>p.id!==id);
-    renderPlacas();
-  }
+  function removePlaca(id) { placas=placas.filter(p=>p.id!==id); renderPlacas(); }
 
   function updatePlaca(id,field,value) {
     const p=placas.find(p=>p.id===id);
-    if(p){ p[field]=value; renderCard(id); renderResults(); }
+    if(p){ p[field]=value; updateCard(id); renderResults(); }
   }
 
   function setTipo(id,tipo) {
@@ -575,7 +343,7 @@
     placas=[]; nextId=1; renderPlacas();
   }
 
-  function renderCard(id) {
+  function updateCard(id) {
     const p=placas.find(p=>p.id===id);
     if(!p) return;
     const unit=calcUnitario(p.tipo,parseFloat(p.l),parseFloat(p.a));
@@ -593,7 +361,7 @@
     const container=document.getElementById('placas-container');
     container.innerHTML='';
     if(placas.length===0){
-      container.innerHTML='<div style="width:100%;text-align:center;padding:20px 0;color:#334155;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;">📐 Adicione uma placa para começar</div>';
+      container.innerHTML='<div style="width:100%;max-width:600px;text-align:center;padding:30px 0;color:#334155;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;">📐 Adicione uma placa para começar</div>';
       renderResults(); return;
     }
     placas.forEach((p,idx)=>{
@@ -607,15 +375,15 @@
           <div class="card-number">${idx+1}</div>
           <div class="type-tabs">
             <button class="type-tab simples ${p.tipo==='simples'?'active':''}" onclick="setTipo(${p.id},'simples')">Simples</button>
-            <button class="type-tab plastificada ${p.tipo==='plastificada'?'active':''}" onclick="setTipo(${p.id},'plastificada')">Plastif.</button>
+            <button class="type-tab plastificada ${p.tipo==='plastificada'?'active':''}" onclick="setTipo(${p.id},'plastificada')">Plastificada</button>
             <button class="type-tab vinil ${p.tipo==='vinil'?'active':''}" onclick="setTipo(${p.id},'vinil')">Vinil</button>
           </div>
           <button class="remove-btn" onclick="removePlaca(${p.id})">✕</button>
         </div>
         <div class="inputs-row">
-          <div class="input-group"><label>Largura cm</label><input type="number" value="${p.l}" placeholder="0" oninput="updatePlaca(${p.id},'l',this.value)"></div>
-          <div class="input-group"><label>Altura cm</label><input type="number" value="${p.a}" placeholder="0" oninput="updatePlaca(${p.id},'a',this.value)"></div>
-          <div class="input-group"><label>Qtd</label><input type="number" value="${p.qtd}" min="1" oninput="updatePlaca(${p.id},'qtd',this.value)"></div>
+          <div class="input-group"><label>Largura (cm)</label><input type="number" value="${p.l}" placeholder="0" oninput="updatePlaca(${p.id},'l',this.value)"></div>
+          <div class="input-group"><label>Altura (cm)</label><input type="number" value="${p.a}" placeholder="0" oninput="updatePlaca(${p.id},'a',this.value)"></div>
+          <div class="input-group"><label>Quantidade</label><input type="number" value="${p.qtd}" min="1" oninput="updatePlaca(${p.id},'qtd',this.value)"></div>
         </div>
         <div class="result-row">
           <div class="result-box">
@@ -643,9 +411,8 @@
       const total=unit*qtd;
       totalGeral+=total;
       if(p.l&&p.a&&parseFloat(p.l)>0&&parseFloat(p.a)>0){
-        const bc='badge-'+p.tipo;
         const tl=p.tipo==='simples'?'Simples':p.tipo==='plastificada'?'Plastif.':'Vinil';
-        summaryHTML+=`<div class="summary-item"><div class="summary-item-name"><span class="badge ${bc}">${tl}</span>${p.l}×${p.a}cm × ${qtd}un</div><div class="summary-item-value">${fmt(total)}</div></div>`;
+        summaryHTML+=`<div class="summary-item"><div class="summary-item-name"><span class="badge badge-${p.tipo}">${tl}</span>${p.l}×${p.a}cm × ${qtd}un</div><div class="summary-item-value">${fmt(total)}</div></div>`;
       }
     });
     document.getElementById('summary').innerHTML=summaryHTML;
@@ -655,8 +422,7 @@
   function copyVal(id,type) {
     const el=document.getElementById(type+'-'+id);
     if(!el) return;
-    const val=el.textContent;
-    navigator.clipboard.writeText(val).then(()=>{
+    navigator.clipboard.writeText(el.textContent).then(()=>{
       const btn=el.nextElementSibling;
       btn.textContent='✅'; btn.classList.add('copied');
       setTimeout(()=>{ btn.textContent='📋'; btn.classList.remove('copied'); },1500);
