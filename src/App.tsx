@@ -210,7 +210,22 @@ const Dashboard = ({ onSelectView }: { onSelectView: (view: View) => void }) => 
           </h1>
           <p className="text-slate-400 mt-2 font-medium">Selecione o módulo de cálculo</p>
         </div>
-        
+
+                <div className="flex justify-center mb-6">
+          
+            href="/calculadora-placas.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 px-8 py-4 bg-white/10 hover:bg-white/20 border border-white/20 rounded-2xl text-white font-bold transition-all active:scale-95"
+          >
+            <span className="text-2xl">🧮</span>
+            <div className="text-left">
+              <div className="text-sm font-black uppercase tracking-wide">Calculadora de Placas</div>
+              <div className="text-xs text-white/50 font-medium">Abrir calculadora rápida</div>
+            </div>
+            <span className="text-white/40 text-lg">↗</span>
+          </a>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {menuItems.map((item) => (
             <button
